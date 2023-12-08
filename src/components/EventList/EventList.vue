@@ -13,7 +13,7 @@ import SaleEvent from '@/components/SaleEvent/SaleEvent.vue'
         <SaveIcon />
       </div>
     </div>
-    <div class="w-full overflow-y-auto" :class="$style.event_list">
+    <!-- <div class="w-full overflow-y-auto" :class="$style.event_list">
       <SaleEvent />
       <SaleEvent />
       <SaleEvent />
@@ -30,11 +30,11 @@ import SaleEvent from '@/components/SaleEvent/SaleEvent.vue'
     </div>
     <div class="w-full py-4">
       <EventListActions />
-    </div>
+    </div> -->
   </div>
 </template>
 <style lang="scss" module>
-.event_list {
-  height: calc(100vh - 150px);
-}
+// .event_list {
+//   height: calc(100vh - 150px);
+// }
 </style>
