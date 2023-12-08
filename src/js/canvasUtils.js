@@ -6,6 +6,15 @@ var greenSquare = null
 var holeStartX = null
 var holeEndX = null
 
+var centerX = 0
+var centerY = 0
+
+var lineStartX = 0
+var lineEndX = 0
+var lineY = 0
+
+var myApp = null
+
 export const resizeCanvas = (app) => {
   const resize = () => {
     const div = document.querySelector('.pixi-container')
@@ -19,6 +28,7 @@ export const resizeCanvas = (app) => {
 }
 
 export const addImageToCanvas = (app) => {
+  myApp = app
   const humanTexture = PIXI.Texture.from(humanImagePath)
   human = new PIXI.Sprite(humanTexture)
   human.anchor.set(0.5)
@@ -33,12 +43,12 @@ export const createLineWithHole = (app) => {
   const line = new PIXI.Graphics()
   line.lineStyle(2, 0xff0000) // Червоний колір, товщина лінії 2 пікселя
 
-  const centerX = app.screen.width / 2
-  const centerY = app.screen.height / 2
+  centerX = app.screen.width / 2
+  centerY = app.screen.height / 2
 
-  const lineStartX = 0
-  const lineEndX = app.screen.width - 50
-  const lineY = centerY
+  lineStartX = 0
+  lineEndX = app.screen.width - 50
+  lineY = centerY
 
   // Перша частина лінії (500 пікселів)
   line.moveTo(lineStartX, lineY)
@@ -76,25 +86,44 @@ function isInsideHole(x, y) {
   return x >= holeStartX && x <= holeEndX
 }
 
-// Функція для перевірки чи точка (x, y) перебуває на червоній лінії
+// Функція для перевірки, чи точка (x, y) перебуває на червоній лінії
 function isOnRedLine(x, y) {
-  // Реалізація логіки перевірки перетину точки (x, y) з червоною лінією
-  // Повертає true якщо точка знаходиться на червоній лінії, інакше - false
+  // Перевірка для першої частини лінії (500 пікселів)
+  if (x >= lineStartX && x <= lineStartX + 500 && y === lineY) {
+    return true
+  }
+
+  // Перевірка для другої частини лінії (200 пікселів)
+  if (x >= holeEndX && x <= holeEndX + 200 && y === lineY) {
+    return true
+  }
+
+  return false
 }
 
 // Функція для руху людини до зеленого квадрата
-function moveHumanToGreenSquare() {
-  // Отримати поточну позицію людини (human.x, human.y)
-  const currentPositionX = human.x
-  const currentPositionY = human.y
+export const moveHumanToGreenSquare = (app) => {
+  console.log('moveHumanToGreenSquare called!')
+  const greenSquareX = 10 // координата X зеленого квадрата
+  const greenSquareY = app.screen.height - 50 // координата Y зеленого квадрата
 
-  // Перевірити чи поточна позиція знаходиться на червоній лінії або у отворі
-  if (
-    !isOnRedLine(currentPositionX, currentPositionY) &&
-    !isInsideHole(currentPositionX, currentPositionY)
-  ) {
-    // Рухати людину до зеленого квадрата
-    // Реалізувати алгоритм руху вздовж визначеного шляху (наприклад, за допомогою алгоритму A* або просто вздовж вільного шляху)
-    // Оновити позицію людини (human.x, human.y) відповідно до руху
+  const startX = human.x // початкова позиція X людини
+  const startY = human.y // початкова позиція Y людини
+
+  const distanceX = greenSquareX - startX // відстань по X до зеленого квадрата
+  const distanceY = greenSquareY - startY // відстань по Y до зеленого квадрата
+
+  // Рухати людину до зеленого квадрата тільки якщо вона не на червоній лінії
+  if (!isOnRedLine(human.x, human.y)) {
+    // Якщо поточна позиція людини не збігається з позицією зеленого квадрата
+    if (distanceX !== 0 || distanceY !== 0) {
+      // Визначення кроків для переміщення
+      const stepX = distanceX > 0 ? 1 : -1 // напрямок руху по X
+      const stepY = distanceY > 0 ? 1 : -1 // напрямок руху по Y
+
+      // Переміщення людини в напрямку зеленого квадрата
+      human.x += stepX
+      human.y += stepY
+    }
   }
 }

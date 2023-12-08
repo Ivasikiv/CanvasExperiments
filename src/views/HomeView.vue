@@ -26,6 +26,7 @@ canvasUtils.resizeCanvas(app)
 canvasUtils.addImageToCanvas(app)
 canvasUtils.createLineWithHole(app)
 canvasUtils.addGreenSquare(app)
+canvasUtils.moveHumanToGreenSquare(app)
 
 onMounted(() => {
   const container = pixiCanvasContainer.value
